@@ -44,7 +44,8 @@ class AndroidProfileInAppWebViewWidget extends PlatformInAppWebViewWidget {
   @override
   Widget build(BuildContext context) {
     final normalizedProfileName = _normalizeProfileName(profileName);
-    final headlessWebViewIsRunning = params.headlessWebView?.isRunning() ?? false;
+    final headlessWebViewIsRunning =
+        params.headlessWebView?.isRunning() ?? false;
 
     if (normalizedProfileName != null &&
         (headlessWebViewIsRunning || params.keepAlive != null)) {
@@ -110,9 +111,8 @@ class AndroidProfileInAppWebViewWidget extends PlatformInAppWebViewWidget {
             'contextMenu': params.contextMenu?.toMap() ?? {},
             'windowId': params.windowId,
             'profileName': normalizedProfileName,
-            'headlessWebViewId': headlessWebViewIsRunning
-                ? params.headlessWebView?.id
-                : null,
+            'headlessWebViewId':
+                headlessWebViewIsRunning ? params.headlessWebView?.id : null,
             'initialUserScripts': params.initialUserScripts
                     ?.map((script) => script.toMap())
                     .toList() ??
@@ -173,8 +173,7 @@ class AndroidProfileInAppWebViewWidget extends PlatformInAppWebViewWidget {
     debugLog(
       className: runtimeType.toString(),
       id: viewId?.toString(),
-      debugLoggingSettings:
-          PlatformInAppWebViewController.debugLoggingSettings,
+      debugLoggingSettings: PlatformInAppWebViewController.debugLoggingSettings,
       method: 'onWebViewCreated',
       args: const [],
     );
@@ -232,8 +231,7 @@ class AndroidProfileInAppWebViewWidget extends PlatformInAppWebViewWidget {
     debugLog(
       className: runtimeType.toString(),
       id: viewId?.toString(),
-      debugLoggingSettings:
-          PlatformInAppWebViewController.debugLoggingSettings,
+      debugLoggingSettings: PlatformInAppWebViewController.debugLoggingSettings,
       method: 'dispose',
       args: const [],
     );
