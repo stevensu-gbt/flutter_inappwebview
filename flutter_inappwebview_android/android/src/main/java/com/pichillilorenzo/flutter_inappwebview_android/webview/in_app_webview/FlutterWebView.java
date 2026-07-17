@@ -12,6 +12,7 @@ import android.widget.FrameLayout;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.webkit.WebViewCompat;
 import androidx.webkit.WebViewFeature;
 
 import com.pichillilorenzo.flutter_inappwebview_android.InAppWebViewFlutterPlugin;
@@ -46,7 +47,7 @@ public class FlutterWebView implements PlatformWebView {
     displayListenerProxy.onPreWebViewInitialization(displayManager);
 
     keepAliveId = (String) params.get("keepAliveId");
-    
+
     Map<String, Object> initialSettings = (Map<String, Object>) params.get("initialSettings");
     Map<String, Object> contextMenu = (Map<String, Object>) params.get("contextMenu");
     Integer windowId = (Integer) params.get("windowId");
@@ -63,8 +64,9 @@ public class FlutterWebView implements PlatformWebView {
       }
     }
 
-    webView = new InAppWebView(context, plugin, id, windowId, customSettings, contextMenu, 
+    webView = new InAppWebView(context, plugin, id, windowId, customSettings, contextMenu,
             customSettings.useHybridComposition ? null : plugin.flutterView, userScripts);
+    bindProfileIfRequested(webView, params.get("profileName"));
     displayListenerProxy.onPostWebViewInitialization(displayManager);
 
     // set MATCH_PARENT layout params to the WebView, otherwise it won't take all the available space!
@@ -80,6 +82,26 @@ public class FlutterWebView implements PlatformWebView {
     findInteractionController.prepare();
 
     webView.prepare();
+  }
+
+  private static void bindProfileIfRequested(
+          @NonNull InAppWebView webView,
+          @Nullable Object rawProfileName) {
+    if (!(rawProfileName instanceof String)) {
+      return;
+    }
+
+    String profileName = ((String) rawProfileName).trim();
+    if (profileName.isEmpty()) {
+      return;
+    }
+
+    if (!WebViewFeature.isFeatureSupported(WebViewFeature.MULTI_PROFILE)) {
+      throw new UnsupportedOperationException(
+              "Android System WebView does not support MULTI_PROFILE.");
+    }
+
+    WebViewCompat.setProfile(webView, profileName);
   }
 
   @Override
